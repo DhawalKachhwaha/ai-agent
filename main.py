@@ -18,11 +18,16 @@ def main() -> None:
 
     load_dotenv()
     api_key = os.environ.get("OPENROUTER_API_KEY")
+
+    api = os.environ.get("API")
     if not api_key:
         raise RuntimeError("OPENROUTER_API_KEY environment variable not set")
 
+    if not api:
+        raise RuntimeError("API environment variable not set")
+
     client = OpenAI(
-        base_url="http://127.0.0.1:8080/v1",
+        base_url=api,
         api_key=api_key,
     )
     messages = [
@@ -39,6 +44,9 @@ def main() -> None:
                 print("Final response:")
                 print(final_response)
                 return
+        except RuntimeError as e:
+            print(f"Error in generate_content: {e}")
+            sys.exit(1)
         except Exception as e:
             print(f"Error in generate_content: {e}")
 
@@ -47,8 +55,11 @@ def main() -> None:
 
 
 def generate_content(client: OpenAI, messages: list, verbose: bool) -> str | None:
+    model = os.environ.get("MODEL")
+    if not model:
+        raise RuntimeError("MODEL environment variable not set")
     response = client.chat.completions.create(
-        model="/home/dhawal/models/Qwen3.5-9B-The-Defiant-Fable-Uncnr-Heretic-NEO-MAX-Q4_K_M.gguf",
+        model=model,
         messages=messages,
         tools=available_functions,
     )
