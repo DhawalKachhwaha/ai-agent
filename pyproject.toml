@@ -5,6 +5,7 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.14"
 dependencies = [
+    "cryptography",
     "openai==2.44.0",
     "python-dotenv==1.1.0",
 ]
